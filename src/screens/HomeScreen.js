@@ -12,7 +12,7 @@ export default function HomeScreen({ navigate, scores }) {
         <h1 style={{fontFamily:"'DM Serif Display',serif",fontSize:28,lineHeight:1.22,color:'var(--navy)',marginBottom:12}}>Discover how your<br/>brain performs today</h1>
         <p style={{fontSize:14,color:'var(--text2)',lineHeight:1.7,maxWidth:320,margin:'0 auto 28px'}}>7 evidence-based mini-games measuring key cognitive domains. Complete in under 15 minutes.</p>
         <div style={{display:'flex',flexDirection:'column',gap:10,maxWidth:320,margin:'0 auto'}}>
-          <button className="btn-primary" onClick={()=>navigate('domains')}>{done===0?'Start Assessment →':`Continue (${done}/7 done)`}</button>
+          <button className="btn-primary" onClick={()=>navigate('intake')}>{done===0?'Start Assessment →':`Continue (${done}/7 done)`}</button>
           <button className="btn-secondary" onClick={()=>navigate('dashboard')}>View my cognitive profile</button>
         </div>
       </div>

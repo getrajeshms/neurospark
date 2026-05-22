@@ -1,5 +1,5 @@
 import { DOMAINS, scoreTag, scoreColor } from '../data';
-export default function DomainsScreen({ navigate, scores }) {
+export default function DomainsScreen({ navigate, scores, participant }) {
   const done = Object.keys(scores).length;
   return (
     <div className="fade-up">
@@ -8,7 +8,14 @@ export default function DomainsScreen({ navigate, scores }) {
         <span style={{fontSize:15,fontWeight:500}}>Select Domain</span>
         <div style={{width:70}}/>
       </nav>
-      <div style={{padding:'16px 20px 8px'}}>
+      {participant && (
+        <div style={{padding:'10px 20px 0',display:'flex',alignItems:'center',gap:10}}>
+          <div style={{background:'var(--brand-light)',borderRadius:10,padding:'6px 12px',fontSize:12,color:'var(--brand)',fontWeight:500}}>
+            👤 {participant.name} · Age {participant.age}
+          </div>
+        </div>
+      )}
+      <div style={{padding:'12px 20px 8px'}}>
         <p style={{fontSize:14,color:'var(--text2)',lineHeight:1.6}}>Tap any domain to start its assessment game. Complete all 7 for a full cognitive profile.</p>
       </div>
       <div style={{padding:'8px 20px 16px'}}>
@@ -19,7 +26,7 @@ export default function DomainsScreen({ navigate, scores }) {
         <div className="progress-bar"><div className="progress-fill" style={{width:`${(done/7)*100}%`}}/></div>
       </div>
       <div className="section" style={{paddingTop:0}}>
-        <div style={{display:'flex',flexDirection:'column',gap:10,marginBottom:20}}>
+        <div style={{display:'flex',flexDirection:'column',gap:10,marginBottom:16}}>
           {DOMAINS.map(d=>{
             const s=scores[d.id]; const tag=scoreTag(s?.score);
             return (
@@ -42,6 +49,13 @@ export default function DomainsScreen({ navigate, scores }) {
           })}
         </div>
       </div>
+      {done >= 3 && (
+        <div style={{padding:'0 20px 16px'}}>
+          <button className="btn-primary" style={{background:'var(--navy)'}} onClick={()=>navigate('report')}>
+            {done===7 ? '📄 View Full Report & Brain Age' : `📄 Partial Report (${done}/7 domains)`}
+          </button>
+        </div>
+      )}
       <p className="disclaimer">Scores update after each game. Repeat any domain to track changes over time.</p>
     </div>
   );

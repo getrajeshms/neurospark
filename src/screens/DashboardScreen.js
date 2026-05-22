@@ -74,7 +74,10 @@ export default function DashboardScreen({ navigate, scores, sessions }) {
                     </ResponsiveContainer>
                   </div>
                 )}
-                <button className="btn-primary" onClick={()=>navigate('domains')}>{completed.length<7?'Continue Assessment →':'Retake Assessment →'}</button>
+                <div style={{display:'flex',flexDirection:'column',gap:10}}>
+                  {completed.length>=3 && <button className="btn-primary" style={{background:'var(--navy)'}} onClick={()=>navigate('report')}>📄 View Full Report & Brain Age</button>}
+                  <button className="btn-primary" onClick={()=>navigate('domains')}>{completed.length<7?'Continue Assessment →':'Retake Assessment →'}</button>
+                </div>
               </>
         )}
         {tab==='domains' && (
