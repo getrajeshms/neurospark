@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import A1Badge from '../components/A1Badge';
 import { RadarChart, PolarGrid, PolarAngleAxis, Radar, ResponsiveContainer, Tooltip } from 'recharts';
 import { DOMAINS, scoreColor, scoreTag } from '../data';
 
@@ -124,6 +125,7 @@ export default function DashboardScreen({ navigate, scores, sessions }) {
               })
         )}
       </div>
+      <A1Badge />
       <p className="disclaimer">⚠ NeuroSpark is for research and informational use only. Not a clinical diagnostic tool.</p>
     </div>
   );

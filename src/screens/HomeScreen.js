@@ -1,4 +1,5 @@
 import { DOMAINS } from '../data';
+import A1Badge from '../components/A1Badge';
 export default function HomeScreen({ navigate, scores }) {
   const done = Object.keys(scores).length;
   return (
@@ -49,6 +50,7 @@ export default function HomeScreen({ navigate, scores }) {
           ))}
         </div>
       </div>
+      <A1Badge />
       <p className="disclaimer">⚠ NeuroSpark is not a diagnostic tool. Results should not be used to make medical decisions without consulting a qualified medical professional. For research use only.</p>
     </div>
   );

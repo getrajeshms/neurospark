@@ -1,4 +1,5 @@
 import { DOMAINS, scoreTag, scoreColor } from '../data';
+import A1Badge from '../components/A1Badge';
 export default function DomainsScreen({ navigate, scores, participant }) {
   const done = Object.keys(scores).length;
   return (
@@ -56,6 +57,7 @@ export default function DomainsScreen({ navigate, scores, participant }) {
           </button>
         </div>
       )}
+      <A1Badge />
       <p className="disclaimer">Scores update after each game. Repeat any domain to track changes over time.</p>
     </div>
   );

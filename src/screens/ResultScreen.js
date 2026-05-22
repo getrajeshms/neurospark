@@ -1,4 +1,5 @@
 import { scoreColor, DOMAINS } from '../data';
+import A1Badge from '../components/A1Badge';
 export default function ResultScreen({ result, navigate }) {
   if (!result) return null;
   const { domain, score, metrics, elapsed } = result;
@@ -47,6 +48,7 @@ export default function ResultScreen({ result, navigate }) {
           <button className="btn-secondary" style={{borderColor:'var(--brand)',color:'var(--brand)'}} onClick={()=>navigate('dashboard')}>View full profile</button>
         </div>
       </div>
+      <A1Badge />
       <p className="disclaimer">⚠ These results are for informational purposes only and are not a clinical diagnosis.</p>
     </div>
   );

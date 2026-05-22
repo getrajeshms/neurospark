@@ -1,10 +1,13 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { jsPDF } from 'jspdf';
+import A1Badge from '../components/A1Badge';
 import { DOMAINS, scoreColor } from '../data';
 import { calculateBrainAge, getDomainInterpretation, getRecommendations } from '../brainAge';
 
 export default function ReportScreen({ navigate, scores, sessions, participant }) {
   const report = calculateBrainAge(scores, participant?.age || 40);
   const printRef = useRef();
+  const [downloading, setDownloading] = useState(false);
 
   useEffect(() => { window.scrollTo(0,0); }, []);
 
@@ -26,8 +29,10 @@ export default function ReportScreen({ navigate, scores, sessions, participant }
   const handlePrint = () => window.print();
 
   const handleDownloadPDF = async () => {
+    if (downloading) return;
+    setDownloading(true);
     try {
-      const { jsPDF } = await import('jspdf');
+      
       const doc = new jsPDF({ orientation:'portrait', unit:'mm', format:'a4' });
       const W = 210, margin = 20;
       let y = 20;
@@ -147,20 +152,26 @@ export default function ReportScreen({ navigate, scores, sessions, participant }
         y += rLines.length*4.5 + 5;
       });
 
-      // Footer
+      // Footer with A1Intercept branding
       const pageCount = doc.internal.getNumberOfPages();
       for (let i=1; i<=pageCount; i++) {
         doc.setPage(i);
-        doc.setFillColor(241,247,244);
-        doc.rect(0, 287, W, 10, 'F');
-        doc.setTextColor(...text2); doc.setFontSize(7); doc.setFont('helvetica','normal');
-        doc.text('⚠ NeuroSpark is not a clinical diagnostic tool. This report is for research and informational purposes only.', margin, 293);
-        doc.text(`Page ${i} of ${pageCount}`, W-margin, 293, {align:'right'});
+        doc.setFillColor(4, 44, 83);
+        doc.rect(0, 284, W, 13, 'F');
+        doc.setTextColor(160,185,175); doc.setFontSize(6); doc.setFont('helvetica','normal');
+        doc.text('Not a diagnostic tool. For research use only.', margin, 290);
+        doc.setTextColor(255,255,255); doc.setFontSize(7.5); doc.setFont('helvetica','bold');
+        doc.text('NeuroSpark', W/2, 289, {align:'center'});
+        doc.setTextColor(29,158,117); doc.setFontSize(6); doc.setFont('helvetica','normal');
+        doc.text('Cognitive Assessment Platform', W/2, 293, {align:'center'});
+        doc.setTextColor(160,185,175); doc.setFontSize(6.5); doc.setFont('helvetica','normal');
+        doc.text(`Built by A1Intercept Technologies  |  Page ${i} of ${pageCount}`, W-margin, 293, {align:'right'});
       }
 
+      setDownloading(false);
       doc.save(`NeuroSpark_Report_${(participant?.name||'Participant').replace(/\s+/g,'_')}_${new Date().toISOString().slice(0,10)}.pdf`);
     } catch (err) {
-      console.error('PDF error:', err);
+      setDownloading(false); console.error("PDF error:", err);
       alert('PDF generation failed. Try printing instead (Ctrl+P).');
     }
   };
@@ -173,8 +184,8 @@ export default function ReportScreen({ navigate, scores, sessions, participant }
       <nav className="nav">
         <button className="nav-back" onClick={()=>navigate('dashboard')}>← Dashboard</button>
         <span style={{fontSize:14,fontWeight:500}}>Cognitive Report</span>
-        <button onClick={handleDownloadPDF} style={{background:'var(--brand)',color:'#fff',border:'none',borderRadius:10,padding:'7px 12px',fontSize:12,fontWeight:500,cursor:'pointer',fontFamily:'inherit'}}>
-          ⬇ PDF
+        <button onClick={handleDownloadPDF} disabled={downloading} style={{background:downloading?'var(--text3)':'var(--brand)',color:'#fff',border:'none',borderRadius:10,padding:'7px 12px',fontSize:12,fontWeight:500,cursor:downloading?'default':'pointer',fontFamily:'inherit'}}>
+          {downloading?'Generating…':'⬇ PDF'}
         </button>
       </nav>
 
@@ -302,12 +313,13 @@ export default function ReportScreen({ navigate, scores, sessions, participant }
 
         {/* Download & actions */}
         <div style={{display:'flex',flexDirection:'column',gap:10}}>
-          <button className="btn-primary" onClick={handleDownloadPDF}>⬇ Download PDF Report</button>
+          <button className="btn-primary" onClick={handleDownloadPDF} disabled={downloading} style={{opacity:downloading?0.7:1}}>{downloading ? "⏳ Generating PDF…" : "⬇ Download PDF Report"}</button>
           <button className="btn-secondary" onClick={handlePrint}>🖨 Print Report</button>
           <button className="btn-secondary" onClick={()=>navigate('domains')}>Retake Assessment</button>
         </div>
 
       </div>
+      <A1Badge />
       <p className="disclaimer">⚠ NeuroSpark is not a clinical diagnostic tool. This report is for research and informational purposes only. Do not make medical decisions based on these results without consulting a qualified healthcare professional.</p>
     </div>
   );
